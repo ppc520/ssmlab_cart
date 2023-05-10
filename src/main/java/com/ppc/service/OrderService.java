@@ -1,4 +1,7 @@
 package com.ppc.service;
 
-public interface OrderService {
+import com.ppc.common.service.BaseService;
+import com.ppc.entity.Order;
+
+public interface OrderService extends BaseService<Order> {
 }

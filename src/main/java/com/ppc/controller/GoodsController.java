@@ -1,6 +1,5 @@
 package com.ppc.controller;
 
-import com.ppc.common.result.Result;
 import com.ppc.service.GoodsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;

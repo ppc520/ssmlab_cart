@@ -1,4 +1,8 @@
 package com.ppc.dao;
 
-public interface UserDao {
+import com.ppc.common.dao.BaseDao;
+import com.ppc.entity.User;
+
+public interface UserDao extends BaseDao<User> {
+    User getByUserName(String username);
 }

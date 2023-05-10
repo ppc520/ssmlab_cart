@@ -6,6 +6,8 @@
     <!-- 没有匹配上的url全部按默认方式（就是直接访问）访问，避免拦截静态资源 -->
     <context:component-scan base-package="com.ppc" />
 
+    <mvc:view-controller path="/" view-name="/pages/login.html"></mvc:view-controller>
+
     <mvc:default-servlet-handler/>
     <!-- 开启mvc注解-->
     <mvc:annotation-driven>
