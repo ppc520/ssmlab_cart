@@ -80,8 +80,12 @@
                     "username":this.username,
                     "password":this.password
                 }).then((response)=>{
+
                     if (response.data.code=='200'){
-                        window.location.href="index.html";
+                        sessionStorage.setItem("username",this.username)
+                        sessionStorage.setItem("userId",response.data.data.userId)
+                        sessionStorage.setItem("balance",response.data.data.balance)
+                        window.location.href="/pages/index.vue";
                     }else if (response.data.code=='201'){
                         alert("账号或者密码错误")
                     }

@@ -18,9 +18,7 @@
     /* 左侧菜单样式 */
     #menu {
       float: left;
-      width: 200px;
-      height: 100%;
-      background-color: #eee;
+
     }
     /* 右侧table样式 */
     #table {
@@ -33,10 +31,10 @@
 <div id="app">
   <div id="menu" >
     <el-radio-group v-model="isCollapse" style="margin-bottom: 20px;">
-<!--      <el-radio-button :label="false">展开</el-radio-button>-->
-<!--      <el-radio-button :label="true">收起</el-radio-button>-->
+      <el-radio-button :label="false">展开</el-radio-button>
+      <el-radio-button :label="true">收起</el-radio-button>
     </el-radio-group>
-    <el-menu :default-active="'product'" @select="handleMenuSelect" class="el-menu-vertical-demo"
+    <el-menu :default-active="'user'" @select="handleMenuSelect" class="el-menu-vertical-demo"
              @open="handleOpen" @close="handleClose"
              :collapse="isCollapse">
       <el-menu-item index="goods">
@@ -65,10 +63,10 @@
         <el-table-column prop="name" label="姓名" width="180"></el-table-column>
         <el-table-column prop="address" label="地址"></el-table-column>
       </el-table>
-      <el-table v-show="currentMenu==='user'" :data="tableData" stripe style="width: 100%">
-        <el-table-column prop="date" label="日期" width="180"></el-table-column>
-        <el-table-column prop="name" label="姓名" width="180"></el-table-column>
-        <el-table-column prop="address" label="地址"></el-table-column>
+      <el-table v-show="currentMenu==='user'" :data="userTableData" stripe style="width: 100%">
+        <el-table-column prop="userId"   label="用户id" width="180"></el-table-column>
+        <el-table-column prop="username" label="用户名" width="180"></el-table-column>
+        <el-table-column prop="balance"  label="余额"></el-table-column>
       </el-table>
     </template>
   </div>
@@ -78,8 +76,13 @@
     data() {
       return {
         isCollapse: false,
-        currentMenu: 'product',
+        currentMenu: 'user',
 
+        userTableData:[{
+          userId:'',
+          username:'',
+          balance:''
+        }],
 
         tableData: [{
           date: '2016-05-02',
@@ -100,6 +103,13 @@
         }]
       };
     },
+    beforeCreated(){
+      let sessionUname=sessionStorage.getItem("username")
+
+      this.fetchUserData()
+
+    },
+
     methods: {
       // handleOpen(key, keyPath) {
       //   console.log(key, keyPath);
@@ -109,6 +119,11 @@
       // },
       handleMenuSelect(menu) {
         this.currentMenu = menu;
+      },
+      fetchUserData:function (username){
+          this.userId=sessionStorage.getItem("userId")
+          this.username=sessionStorage.getItem("sessionStorage")
+          this.balance=sessionStorage.getItem("balance")
       }
     }
   }

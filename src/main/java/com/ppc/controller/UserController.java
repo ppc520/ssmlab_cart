@@ -6,21 +6,34 @@ import com.ppc.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
+
 
 @RestController
 @RequestMapping("/user")
 public class UserController {
     @Autowired
     UserService userService;
+
     @PostMapping("/login")
-    public Result login(@RequestBody User user){
-        System.out.println("user = " + user);
-        User userFromDatabase=userService.getByUserName(user.getUsername());
-        System.out.println("userFromDatabase = " + userFromDatabase);
-        if(userFromDatabase.getPassword()!=null){
-            return userFromDatabase.getPassword().equals(user.getPassword())?Result.ok():Result.fail();
+    public Result login(@RequestBody User user,Map map) {
+        User userFromDatabase = userService.getByUserName(user.getUsername());
+        if (userFromDatabase.getPassword() != null) {
+            if (userFromDatabase.getPassword().equals(user.getPassword())) {
+                return Result.ok(userFromDatabase);
+            }
         }
         return Result.fail();
-
+    }
+    @GetMapping("/{username}")
+    public Result getByUsername(@PathVariable("username") String username){
+        System.out.println("===================>执行了/username");
+        User user = userService.getByUserName(username);
+        User userVo=new User();
+        userVo.setUserId(user.getUserId());
+        userVo.setBalance(user.getBalance());
+        userVo.setUsername(user.getUsername());
+        return Result.ok(userVo);
     }
 }
