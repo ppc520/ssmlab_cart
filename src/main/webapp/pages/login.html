@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>登录</title>
@@ -81,7 +81,7 @@
                     "password":this.password
                 }).then((response)=>{
                     if (response.data.code=='200'){
-                        window.location.href="http://www.baidu.com";
+                        window.location.href="index.html";
                     }else if (response.data.code=='201'){
                         alert("账号或者密码错误")
                     }

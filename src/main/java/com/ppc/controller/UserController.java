@@ -17,7 +17,10 @@ public class UserController {
         System.out.println("user = " + user);
         User userFromDatabase=userService.getByUserName(user.getUsername());
         System.out.println("userFromDatabase = " + userFromDatabase);
-        return userFromDatabase.getPassword().equals(user.getPassword())?Result.ok():Result.fail();
+        if(userFromDatabase.getPassword()!=null){
+            return userFromDatabase.getPassword().equals(user.getPassword())?Result.ok():Result.fail();
+        }
+        return Result.fail();
 
     }
 }
