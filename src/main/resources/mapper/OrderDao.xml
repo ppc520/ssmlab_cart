@@ -3,9 +3,9 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.ppc.dao.GoodsDao">
-    <sql id="columns">select goods_id, goods_code, goods_name, in_price, sale_price, goods_quantity from goods</sql>
-    <select id="getAll" resultType="goods">
+<mapper namespace="com.ppc.dao.OrderDao">
+    <sql id="columns">select order_id, create_time, username, origin_price, discount, paid_money from `order`</sql>
+    <select id="getAll" resultType="order">
         <include refid="columns"></include>
         where deleted=0
     </select>

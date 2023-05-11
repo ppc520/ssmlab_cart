@@ -7,9 +7,9 @@ import java.util.Date;
 public class Order {
     private Integer orderId;
     private Date createTime;
-    private String userName;
+    private String username;
     private Double originPrice;
-    private Double diccount;
+    private Double discount;
     private Double paidMoney;
     private Integer deleted;
 }

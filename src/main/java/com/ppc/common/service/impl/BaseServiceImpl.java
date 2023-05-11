@@ -3,6 +3,8 @@ package com.ppc.common.service.impl;
 import com.ppc.common.dao.BaseDao;
 import com.ppc.common.service.BaseService;
 
+import java.util.List;
+
 public abstract class BaseServiceImpl<T> implements BaseService<T> {
     protected abstract BaseDao<T> getEntityDao();
 
@@ -20,5 +22,9 @@ public abstract class BaseServiceImpl<T> implements BaseService<T> {
 
     public T getById(Integer id) {
         return getEntityDao().getById(id);
+    }
+
+    public List<T> getAll() {
+        return getEntityDao().getAll();
     }
 }

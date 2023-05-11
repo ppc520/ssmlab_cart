@@ -21,6 +21,7 @@
       float: left;
 
     }
+
     /* 右侧table样式 */
     #table {
       margin-left: 220px;
@@ -30,7 +31,7 @@
 </head>
 <body>
 <div id="app">
-  <div id="menu" >
+  <div id="menu">
     <el-radio-group v-model="isCollapse" style="margin-bottom: 20px;">
       <el-radio-button :label="false">展开</el-radio-button>
       <el-radio-button :label="true">收起</el-radio-button>
@@ -60,18 +61,39 @@
         <el-table-column prop="inPrice" label="进价"></el-table-column>
         <el-table-column prop="salePrice" label="售价"></el-table-column>
         <el-table-column prop="goodsQuantity" label="库存"></el-table-column>
+        <el-table-column prop="count" v-if="false"></el-table-column>
+        <el-table-column label="数量">
+          <template slot-scope="scope">
+            <el-input v-model="scope.row.count" placeholder="0" :max="scope.row.goodsQuantity" min="0"
+                      type="number">
+            </el-input>
+          </template>
+        </el-table-column>
+        <el-table-column>
+          <el-row>
+            <el-button type="success" round @doBuy()>购买</el-button>
+          </el-row>
+        </el-table-column>
+
       </el-table>
-      <el-table v-show="currentMenu==='order'" :data="tableData" stripe style="width: 100%">
-        <el-table-column prop="date" label="日期" width="180"></el-table-column>
-        <el-table-column prop="name" label="姓名" width="180"></el-table-column>
-        <el-table-column prop="address" label="地址"></el-table-column>
+
+
+      <el-table v-show="currentMenu==='order'" :data="orderTableData" stripe style="width: 100%">
+        <el-table-column prop="orderId" label="订单号" width="180"></el-table-column>
+        <el-table-column prop="createTime" label="订单时间" width="180"></el-table-column>
+        <el-table-column prop="username" label="购买者"></el-table-column>
+        <el-table-column prop="originPrice" label="原价"></el-table-column>
+        <el-table-column prop="discount" label="折扣"></el-table-column>
+        <el-table-column prop="paidMoney" label="实收款"></el-table-column>
       </el-table>
       <el-table v-show="currentMenu==='user'" :data="userTableData" stripe style="width: 100%">
-        <el-table-column prop="userId"   label="用户id" width="180"></el-table-column>
+        <el-table-column prop="userId" label="用户id" width="180"></el-table-column>
         <el-table-column prop="username" label="用户名" width="180"></el-table-column>
-        <el-table-column prop="balance"  label="余额"></el-table-column>
-        <el-table-column label="充值余额" >
-          <input v-model="moneyAmount" placeholder="请输入充值金额:" ></input>
+        <el-table-column prop="balance" label="余额"></el-table-column>
+        <el-table-column label="充值余额">
+          <template slot-scope="scope">
+            <el-input v-model="moneyAmount" placeholder="请输入充值金额:"></el-input>
+          </template>
         </el-table-column>
         <el-table-column>
           <el-button type="primary" plain @click="addMoney">点击充值</el-button>
@@ -79,7 +101,6 @@
 
 
       </el-table>
-
     </template>
   </div>
 </div>
@@ -89,48 +110,87 @@
       return {
         isCollapse: false,
         currentMenu: 'user',
-        moneyAmount:'',
+        moneyAmount: '',
 
-        userTableData:[{
-          userId:'',
-          username:'',
-          balance:'',
+
+        orderTableData: [{
+          orderId: '',
+          createTime: '',
+          username: '',
+          originPrice: '',
+          discount: '',
+          paidMoney: ''
         }],
+
+        userTableData: [{
+          userId: '',
+          username: '',
+          balance: '',
+        }],
+
+        goodsTableData: [{
+          goodsId: '',
+          goodsCode: '',
+          goodsName: '',
+          inPrice: '',
+          salePrice: '',
+          goodsQuantity: '',
+
+        }]
 
 
       };
     },
-    created(){
-      this.pullUserData()
+    created() {
+      this.pullUserData();
+      this.fetchGoodsData();
+      this.fetchOrdersData()
     },
 
     methods: {
       handleMenuSelect(menu) {
         this.currentMenu = menu;
       },
-      pullUserData(){
-          this.userTableData=[{
-            userId:sessionStorage.getItem("userId"),
-            username:sessionStorage.getItem("username"),
-            balance:sessionStorage.getItem("balance")
-          }]
+
+      pullUserData() {
+        this.userTableData = [{
+          userId: sessionStorage.getItem("userId"),
+          username: sessionStorage.getItem("username"),
+          balance: sessionStorage.getItem("balance")
+        }]
       },
 
-      addMoney(){
-        axios.put("http://localhost:80/user/update",{
-          "username":sessionStorage.getItem("username"),
-          "balance":this.moneyAmount
-        }).then((response)=>{
-          if (response.data.code=='200'){
-            sessionStorage.setItem("balance",response.data.data.balance)
+      addMoney() {
+        axios.put("http://localhost:80/user/update", {
+          "username": sessionStorage.getItem("username"),
+          "balance": this.moneyAmount
+        }).then((response) => {
+          if (response.data.code == '200') {
+            sessionStorage.setItem("balance", response.data.data.balance)
             alert("充值成功")
-            this.moneyAmount=""
+            this.moneyAmount = ""
             this.pullUserData()
 
-          }else {
+          } else {
             alert(新增失败);
           }
         })
+      },
+
+      fetchGoodsData() {
+        axios.get("http://localhost:80/goods/getAll").then(response => {
+          this.goodsTableData = response.data.data
+        })
+      },
+
+      fetchOrdersData() {
+        axios.get("http://localhost:80/order/getAll").then(response => {
+          this.orderTableData = response.data.data
+        })
+      },
+
+      doBuy(){
+
       }
     }
   }

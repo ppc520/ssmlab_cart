@@ -11,4 +11,8 @@ public class Goods {
     private Double salePrice;
     private Integer goodsQuantity;
     private Integer deleted;
+
+    private Integer count;
+
+
 }

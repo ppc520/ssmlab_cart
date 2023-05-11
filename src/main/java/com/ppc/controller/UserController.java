@@ -19,7 +19,7 @@ public class UserController {
     @PostMapping("/login")
     public Result login(@RequestBody User user) {
         User userFromDatabase = userService.getByUserName(user.getUsername());
-        if (userFromDatabase.getPassword() != null) {
+        if (userFromDatabase != null) {
             if (userFromDatabase.getPassword().equals(user.getPassword())) {
                 return Result.ok(userFromDatabase);
             }
