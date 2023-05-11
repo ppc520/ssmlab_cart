@@ -6,6 +6,7 @@
   <!-- 引入Element UI库 -->
   <script src="//unpkg.com/vue@2/dist/vue.js"></script>
   <script src="//unpkg.com/element-ui@2.15.13/lib/index.js"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   <style>
     @import url("//unpkg.com/element-ui@2.15.13/lib/theme-chalk/index.css");
 
@@ -35,7 +36,6 @@
       <el-radio-button :label="true">收起</el-radio-button>
     </el-radio-group>
     <el-menu :default-active="'user'" @select="handleMenuSelect" class="el-menu-vertical-demo"
-             @open="handleOpen" @close="handleClose"
              :collapse="isCollapse">
       <el-menu-item index="goods">
         <i class="el-icon-menu"></i>
@@ -53,10 +53,13 @@
   </div>
   <div id="table">
     <template>
-      <el-table v-show="currentMenu==='goods'" :data="tableData" stripe style="width: 100%">
-        <el-table-column prop="date" label="日期" width="180"></el-table-column>
-        <el-table-column prop="name" label="姓名" width="180"></el-table-column>
-        <el-table-column prop="address" label="地址"></el-table-column>
+      <el-table v-show="currentMenu==='goods'" :data="goodsTableData" stripe style="width: 100%">
+        <el-table-column prop="goodsId" label="商品id" width="180"></el-table-column>
+        <el-table-column prop="goodsCode" label="商品码" width="180"></el-table-column>
+        <el-table-column prop="goodsName" label="商品名称"></el-table-column>
+        <el-table-column prop="inPrice" label="进价"></el-table-column>
+        <el-table-column prop="salePrice" label="售价"></el-table-column>
+        <el-table-column prop="goodsQuantity" label="库存"></el-table-column>
       </el-table>
       <el-table v-show="currentMenu==='order'" :data="tableData" stripe style="width: 100%">
         <el-table-column prop="date" label="日期" width="180"></el-table-column>
@@ -67,7 +70,16 @@
         <el-table-column prop="userId"   label="用户id" width="180"></el-table-column>
         <el-table-column prop="username" label="用户名" width="180"></el-table-column>
         <el-table-column prop="balance"  label="余额"></el-table-column>
+        <el-table-column label="充值余额" >
+          <input v-model="moneyAmount" placeholder="请输入充值金额:" ></input>
+        </el-table-column>
+        <el-table-column>
+          <el-button type="primary" plain @click="addMoney">点击充值</el-button>
+        </el-table-column>
+
+
       </el-table>
+
     </template>
   </div>
 </div>
@@ -77,53 +89,48 @@
       return {
         isCollapse: false,
         currentMenu: 'user',
+        moneyAmount:'',
 
         userTableData:[{
           userId:'',
           username:'',
-          balance:''
+          balance:'',
         }],
 
-        tableData: [{
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1517 弄'
-        }, {
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1519 弄'
-        }, {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1516 弄'
-        }]
+
       };
     },
-    beforeCreated(){
-      let sessionUname=sessionStorage.getItem("username")
-
-      this.fetchUserData()
-
+    created(){
+      this.pullUserData()
     },
 
     methods: {
-      // handleOpen(key, keyPath) {
-      //   console.log(key, keyPath);
-      // },
-      // handleClose(key, keyPath) {
-      //   console.log(key, keyPath);
-      // },
       handleMenuSelect(menu) {
         this.currentMenu = menu;
       },
-      fetchUserData:function (username){
-          this.userId=sessionStorage.getItem("userId")
-          this.username=sessionStorage.getItem("sessionStorage")
-          this.balance=sessionStorage.getItem("balance")
+      pullUserData(){
+          this.userTableData=[{
+            userId:sessionStorage.getItem("userId"),
+            username:sessionStorage.getItem("username"),
+            balance:sessionStorage.getItem("balance")
+          }]
+      },
+
+      addMoney(){
+        axios.put("http://localhost:80/user/update",{
+          "username":sessionStorage.getItem("username"),
+          "balance":this.moneyAmount
+        }).then((response)=>{
+          if (response.data.code=='200'){
+            sessionStorage.setItem("balance",response.data.data.balance)
+            alert("充值成功")
+            this.moneyAmount=""
+            this.pullUserData()
+
+          }else {
+            alert(新增失败);
+          }
+        })
       }
     }
   }

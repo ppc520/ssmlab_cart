@@ -5,6 +5,32 @@
 
 <mapper namespace="com.ppc.dao.UserDao">
     <select id="getByUserName" resultType="user">
-        select * from user where username=#{username}
+        select *
+        from user
+        where username = #{username}
     </select>
+
+    <update id="update">
+        update user
+        <set>
+
+            <if test="password!=null">
+                password=#{password},
+            </if>
+            <if test="balance!=null">
+                balance=#{balance},
+            </if>
+            <if test="deleted!=null">
+                deleted=#{deleted},
+            </if>
+        </set>
+        <where>
+            <if test="userId!=null">
+                and user_Id=#{userId}
+            </if>
+            <if test="username!=null">
+                and username=#{username}
+            </if>
+        </where>
+    </update>
 </mapper>

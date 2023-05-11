@@ -17,7 +17,7 @@ public class UserController {
     UserService userService;
 
     @PostMapping("/login")
-    public Result login(@RequestBody User user,Map map) {
+    public Result login(@RequestBody User user) {
         User userFromDatabase = userService.getByUserName(user.getUsername());
         if (userFromDatabase.getPassword() != null) {
             if (userFromDatabase.getPassword().equals(user.getPassword())) {
@@ -35,5 +35,14 @@ public class UserController {
         userVo.setBalance(user.getBalance());
         userVo.setUsername(user.getUsername());
         return Result.ok(userVo);
+    }
+    @PutMapping("/update")
+    public Result update(@RequestBody User user){
+        User byUserName = userService.getByUserName(user.getUsername());
+        user.setBalance(user.getBalance()+ byUserName.getBalance());
+        if(userService.update(user)>0){
+            return Result.ok(user);
+        }
+        return Result.fail();
     }
 }
