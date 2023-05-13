@@ -2,9 +2,10 @@ package com.ppc.common.service.impl;
 
 import com.ppc.common.dao.BaseDao;
 import com.ppc.common.service.BaseService;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-
+@Transactional
 public abstract class BaseServiceImpl<T> implements BaseService<T> {
     protected abstract BaseDao<T> getEntityDao();
 

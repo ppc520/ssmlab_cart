@@ -9,5 +9,9 @@
         <include refid="columns"></include>
         where deleted=0
     </select>
+    <insert id="insert">
+        insert into `order` ( username, origin_price, discount, paid_money)
+        values (#{username},#{originPrice},#{discount},#{paidMoney})
+    </insert>
 
 </mapper>

@@ -4,10 +4,7 @@ import com.ppc.common.result.Result;
 import com.ppc.entity.Goods;
 import com.ppc.service.GoodsService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -25,5 +22,11 @@ public class GoodsController {
             }
             return Result.ok(goodsList);
         }return Result.fail();
+    }
+    @PutMapping("/doBuy")
+    public Result doBuy(@RequestBody Goods goods){
+        System.out.println("goods = " + goods);
+        boolean flag=goodsService.doBuy(goods);
+        return flag?Result.ok():Result.fail();
     }
 }

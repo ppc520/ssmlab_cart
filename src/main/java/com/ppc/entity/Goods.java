@@ -3,6 +3,7 @@ package com.ppc.entity;
 import lombok.Data;
 
 @Data
+
 public class Goods {
     private Integer goodsId;
     private String goodsCode;
@@ -13,6 +14,7 @@ public class Goods {
     private Integer deleted;
 
     private Integer count;
+    private String username;
 
 
 }

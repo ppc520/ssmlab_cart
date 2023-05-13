@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 
@@ -34,7 +36,9 @@ public class UserController {
         userVo.setUserId(user.getUserId());
         userVo.setBalance(user.getBalance());
         userVo.setUsername(user.getUsername());
-        return Result.ok(userVo);
+        List list=new ArrayList();
+        list.add(userVo);
+        return Result.ok(list);
     }
     @PutMapping("/update")
     public Result update(@RequestBody User user){

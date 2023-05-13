@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <title>网页标题</title>
   <!-- 引入Element UI库 -->
-  <script src="//unpkg.com/vue@2/dist/vue.js"></script>
-  <script src="//unpkg.com/element-ui@2.15.13/lib/index.js"></script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/vue/2.6.13/vue.js"></script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/element-ui/2.15.13/index.js"></script>
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   <style>
     @import url("//unpkg.com/element-ui@2.15.13/lib/theme-chalk/index.css");
@@ -70,14 +70,14 @@
           </template>
         </el-table-column>
         <el-table-column>
-          <el-row>
-            <el-button type="success" round @doBuy()>购买</el-button>
-          </el-row>
+          <template slot-scope="scope">
+            <el-row>
+              <el-button type="success" round @click="doBuy(scope.row)">购买</el-button>
+            </el-row>
+          </template>
         </el-table-column>
 
       </el-table>
-
-
       <el-table v-show="currentMenu==='order'" :data="orderTableData" stripe style="width: 100%">
         <el-table-column prop="orderId" label="订单号" width="180"></el-table-column>
         <el-table-column prop="createTime" label="订单时间" width="180"></el-table-column>
@@ -123,9 +123,9 @@
         }],
 
         userTableData: [{
-          userId: '',
-          username: '',
           balance: '',
+          userId: '',
+          username: ''
         }],
 
         goodsTableData: [{
@@ -141,8 +141,9 @@
 
       };
     },
+
     created() {
-      this.pullUserData();
+      this.fetchUserData();
       this.fetchGoodsData();
       this.fetchOrdersData()
     },
@@ -150,14 +151,9 @@
     methods: {
       handleMenuSelect(menu) {
         this.currentMenu = menu;
-      },
-
-      pullUserData() {
-        this.userTableData = [{
-          userId: sessionStorage.getItem("userId"),
-          username: sessionStorage.getItem("username"),
-          balance: sessionStorage.getItem("balance")
-        }]
+        this.fetchUserData();
+        this.fetchGoodsData();
+        this.fetchOrdersData()
       },
 
       addMoney() {
@@ -177,6 +173,13 @@
         })
       },
 
+      fetchUserData() {
+        let username = sessionStorage.getItem("username")
+        axios.get("http://localhost:80/user/"+username).then((response)=>{
+          this.userTableData=response.data.data
+        })
+      },
+
       fetchGoodsData() {
         axios.get("http://localhost:80/goods/getAll").then(response => {
           this.goodsTableData = response.data.data
@@ -189,8 +192,30 @@
         })
       },
 
-      doBuy(){
+      doBuy(ppc) {
+        // alert(ppc.goodsId)
+        // alert(ppc.goodsCode)
+        // alert(ppc.goodsName)
+        // alert(ppc.inPrice)
+        // alert(ppc.salePrice)
+        // alert(ppc.goodsQuantity)
+        // alert(ppc.count)
+        //超过十件打7折,order表insert  用户名(username)、原价(saleprice)、折扣(discount)、支付金额(折扣/10*原价*数量)  数量
+        //goods表update，数量减少
+        //user扣钱
+        if (ppc.count == '' || ppc.count == null) {
+          alert("请输入数量！")
+        } else {
+          axios.put("http://localhost:80/goods/doBuy", {
+            "username": sessionStorage.getItem("username"),
+            "salePrice": ppc.salePrice,
+            "count": ppc.count,
+            "goodsId": ppc.goodsId
 
+          }).then((resp) => {
+
+          })
+        }
       }
     }
   }

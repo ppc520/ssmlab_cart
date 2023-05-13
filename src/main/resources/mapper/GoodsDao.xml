@@ -4,10 +4,36 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.ppc.dao.GoodsDao">
-    <sql id="columns">select goods_id, goods_code, goods_name, in_price, sale_price, goods_quantity from goods</sql>
+    <sql id="columns">select goods_id, goods_code, goods_name, in_price, sale_price, goods_quantity
+                      from goods</sql>
     <select id="getAll" resultType="goods">
         <include refid="columns"></include>
         where deleted=0
     </select>
+    <select id="getById" resultType="goods">
+        <include refid="columns"></include>
+        where goods_id=#{id}
+    </select>
+    <update id="update">
+        update goods
+        <set>
+            <if test="goodsCode!=null">
+                goods_Code=#{goodsCode},
+            </if>
+            <if test="goodsName!=null">
+                goods_Name=#{goodsName},
+            </if>
+            <if test="inPrice!=null">
+                in_Price=#{inPrice},
+            </if>
+            <if test="salePrice!=null">
+                sale_Price=#{salePrice},
+            </if>
+            <if test="goodsQuantity!=null">
+                goods_Quantity=#{goodsQuantity},
+            </if>
+        </set>
+            where goods_Id=#{goodsId}
+    </update>
 
 </mapper>
